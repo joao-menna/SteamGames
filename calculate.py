@@ -28,12 +28,17 @@ games_dp_populacional = dp_populacional(all_net_revenue)
 games_cv_amostral = cv_amostral(all_net_revenue)
 games_cv_populacional = cv_populacional(all_net_revenue)
 
+jogo_minimo = games[all_net_revenue.index(games_minimo)]
+jogo_maximo = games[all_net_revenue.index(games_maximo)]
+
 with open("./dados.json", "w+") as file:
     file_contents = json.dumps({
         "moda": games_moda,
         "minimo": games_minimo,
         "maximo": games_maximo,
         "amplitude": games_maximo - games_minimo,
+        "jogoDoMinimo": jogo_minimo,
+        "jogoDoMaximo": jogo_maximo,
         "media": games_media,
         "mediana": games_mediana,
         "desvioPadraoAmostral": games_dp_amostral,
