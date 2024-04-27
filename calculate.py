@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import json
 
 games = []
@@ -35,13 +36,22 @@ games_cv_populacional = cv_populacional(all_net_revenue)
 jogo_minimo = games[all_net_revenue.index(games_minimo)]
 jogo_maximo = games[all_net_revenue.index(games_maximo)]
 
+jogos_moda = []
+for game in games:
+    if game["netRevenue"] == games_moda:
+        jogos_moda.append(game)
+
+games.sort(key=lambda d: d["netRevenue"])
+jogos_mediana = [
+    games[math.floor(len(games) / 2) - 1],
+    games[math.floor(len(games) / 2)],
+]
+
 with open("./dados.json", "w+") as file:
     file_contents = json.dumps({
         "minimo": games_minimo,
         "maximo": games_maximo,
         "amplitude": games_maximo - games_minimo,
-        "jogoDoMinimo": jogo_minimo,
-        "jogoDoMaximo": jogo_maximo,
         "moda": games_moda,
         "media": games_media,
         "mediana": games_mediana,
@@ -50,6 +60,10 @@ with open("./dados.json", "w+") as file:
         "desvioPadraoAmostral": games_dp_amostral,
         "desvioPadraoPopulacional": games_dp_populacional,
         "coeficienteVariacaoAmostral": games_cv_amostral,
-        "coeficienteVariacaoPopulacional": games_cv_populacional
+        "coeficienteVariacaoPopulacional": games_cv_populacional,
+        "jogoDoMinimo": jogo_minimo,
+        "jogoDoMaximo": jogo_maximo,
+        "jogosModa": jogos_moda,
+        "jogosMediana": jogos_mediana
     }, indent=2)
     file.write(file_contents)
