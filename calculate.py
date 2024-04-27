@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import math
 import json
@@ -36,16 +37,21 @@ games_cv_populacional = cv_populacional(all_net_revenue)
 jogo_minimo = games[all_net_revenue.index(games_minimo)]
 jogo_maximo = games[all_net_revenue.index(games_maximo)]
 
+games.sort(key=lambda d: d["netRevenue"])
+all_net_revenue.sort()
+
 jogos_moda = []
 for game in games:
     if game["netRevenue"] == games_moda:
         jogos_moda.append(game)
 
-games.sort(key=lambda d: d["netRevenue"])
 jogos_mediana = [
     games[math.floor(len(games) / 2) - 1],
     games[math.floor(len(games) / 2)],
 ]
+
+last_biggest_games = all_net_revenue[-10:]
+first_smallest_games = all_net_revenue[:10]
 
 with open("./dados.json", "w+") as file:
     file_contents = json.dumps({
@@ -67,3 +73,16 @@ with open("./dados.json", "w+") as file:
         "jogosMediana": jogos_mediana
     }, indent=2)
     file.write(file_contents)
+
+top_10 = [i + 1 for i in range(10)]
+top_10.reverse()
+
+fig, ax = plt.subplots()
+ax.bar(top_10, first_smallest_games)
+plt.title("Top 10 jogos menos rentáveis (acima de 5000 avaliações)")
+fig.savefig("menoresJogos.png")
+
+fig, ax = plt.subplots()
+ax.bar(top_10, last_biggest_games)
+plt.title("Top 10 jogos mais rentáveis")
+fig.savefig("maioresJogos.png")
